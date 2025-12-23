@@ -10,25 +10,15 @@ const PORT = process.env.PORT || 3001;
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
-  process.env.FRONTEND_URL, // URL de producción desde variable de entorno
-].filter(Boolean); // Elimina valores undefined
+  "https://twitch-clone-lake.vercel.app",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+console.log("CORS permitido para:", allowedOrigins);
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Permitir requests sin origin (como mobile apps o curl)
-      if (!origin) return callback(null, true);
-
-      if (
-        allowedOrigins.indexOf(origin) !== -1 ||
-        allowedOrigins.some((allowed) => origin?.includes(allowed))
-      ) {
-        callback(null, true);
-      } else {
-        console.log("Origen bloqueado por CORS:", origin);
-        callback(new Error("No permitido por CORS"));
-      }
-    },
+    origin: allowedOrigins,
     credentials: true,
   })
 );
