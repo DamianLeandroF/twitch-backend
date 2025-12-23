@@ -6,7 +6,9 @@ const axios = require("axios");
 const app = express();
 const PORT = process.env.PORT || 3001; // Puerto del backend
 
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(
+  cors({ origin: ["http://localhost:5173", "https://tu-app.vercel.app"] })
+);
 app.use(express.json());
 
 let twitchAccessToken = null;
