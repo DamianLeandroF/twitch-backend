@@ -4,10 +4,33 @@ const cors = require("cors");
 const axios = require("axios");
 
 const app = express();
-const PORT = process.env.PORT || 3001; // Puerto del backend
+const PORT = process.env.PORT || 3001;
+
+// Configuración de CORS - permite localhost y dominios de producción
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  process.env.FRONTEND_URL, // URL de producción desde variable de entorno
+].filter(Boolean); // Elimina valores undefined
 
 app.use(
-  cors({ origin: ["http://localhost:5173", "https://tu-app.vercel.app"] })
+  cors({
+    origin: function (origin, callback) {
+      // Permitir requests sin origin (como mobile apps o curl)
+      if (!origin) return callback(null, true);
+
+      if (
+        allowedOrigins.indexOf(origin) !== -1 ||
+        allowedOrigins.some((allowed) => origin?.includes(allowed))
+      ) {
+        callback(null, true);
+      } else {
+        console.log("Origen bloqueado por CORS:", origin);
+        callback(new Error("No permitido por CORS"));
+      }
+    },
+    credentials: true,
+  })
 );
 app.use(express.json());
 
